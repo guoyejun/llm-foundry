@@ -160,6 +160,11 @@ def main(cfg):
     # Get batch size info
     cfg = update_batch_size_info(cfg)
 
+    # Read DeepSpeed Config as a dict
+    deepspeed_config = cfg.get('deepspeed_config', None)
+    deepspeed_config = om.to_container(deepspeed_config,
+                                  resolve=True) if deepspeed_config else None
+
     # Read FSDP Config as a dict
     fsdp_config = cfg.get('fsdp_config', None)
     fsdp_config = om.to_container(fsdp_config,
@@ -286,6 +291,7 @@ def main(cfg):
         device_train_microbatch_size=cfg.get('device_train_microbatch_size',
                                              'auto'),
         fsdp_config=fsdp_config,  # type: ignore
+        deepspeed_config=deepspeed_config,  # type: ignore
         save_folder=cfg.get('save_folder', None),
         save_filename=cfg.get('save_filename',
                               'ep{epoch}-ba{batch}-rank{rank}.pt'),

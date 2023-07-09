@@ -83,15 +83,15 @@ device_train_microbatch_size: 16
 # device_train_microbatch_size: auto
 precision: amp_bf16
 
-# FSDP
-fsdp_config:
-  sharding_strategy: FULL_SHARD
-  mixed_precision: PURE
-  activation_checkpointing: false
-  activation_checkpointing_reentrant: false
-  activation_cpu_offload: false
-  limit_all_gathers: true
-  verbose: false
+# DeepSpeed
+deepspeed_config:
+  train_batch_size: 256
+  train_micro_batch_size_per_gpu: 16
+  gradient_accumulation_steps: 2       # 256/16/8 = 2
+  bfloat16:
+    enabled: True
+  zero_optimization:
+    stage: 3
 
 # Logging
 progress_bar: false
