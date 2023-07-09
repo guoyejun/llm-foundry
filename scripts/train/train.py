@@ -137,6 +137,12 @@ def build_dataloader(cfg, tokenizer, device_batch_size):
 
 
 def main(cfg):
+    import os
+    if os.getenv('RANK', '0') == '0':
+        print("BEGIN_PROCESS", os.getpid())
+        import pudb
+        pudb.set_trace()
+
     # Check for incompatibilities between the model and data loaders
     validate_config(cfg)
 
@@ -148,7 +154,7 @@ def main(cfg):
         f'torch.distributed.*_base is a private function and will be deprecated.*'
     )
 
-    cfg.dist_timeout = cfg.get('dist_timeout', 600.0)
+    cfg.dist_timeout = cfg.get('dist_timeout', 60000.0)
 
     reproducibility.seed_all(cfg.seed)
     dist.initialize_dist(get_device(None), timeout=cfg.dist_timeout)
